@@ -5,20 +5,12 @@ import TodoList from "./components/TodoList";
 import TodoAdd from "./components/TodoAdd";
 import { useState } from "react";
 import { Todo } from "./store";
+import "./App.css";
+import Loader from "./components/Loader";
 
 export function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
-
-  // useEffect(() => {
-  //   const LoadData = async () => {
-  //     const response = await fetch(
-  //       "https://raw.githubusercontent.com/jherr/todos-four-ways/master/data/todos.json"
-  //     );
-  //     const responseData = await response.json();
-  //     setTodos(responseData);
-  //   };
-  //   LoadData();
-  // }, []);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleAdd = (newTodoInput: string) => {
     setTodos((todos) => [
@@ -29,11 +21,18 @@ export function App() {
 
   const handleLoad = async () => {
     const LoadData = async () => {
-      const response = await fetch(
-        "https://raw.githubusercontent.com/jherr/todos-four-ways/master/data/todos.json"
-      );
-      const responseData = await response.json();
-      setTodos(responseData);
+      setLoading(true);
+      try {
+        const response = await fetch(
+          "https://raw.githubusercontent.com/jherr/todos-four-ways/master/data/todos.json"
+        );
+        const responseData = await response.json();
+        setTodos(responseData);
+      } catch (e) {
+        console.error(e.message);
+      } finally {
+        setLoading(false);
+      }
     };
     LoadData();
   };
@@ -54,8 +53,11 @@ export function App() {
         <TopBar handleLoad={handleLoad} />
         <Heading>Todo List</Heading>
         <TodoAdd handleClick={handleAdd} />
-
-        <TodoList data={todos} handleDelete={handleDelete} />
+        {loading ? (
+          <Loader />
+        ) : (
+          <TodoList data={todos} handleDelete={handleDelete} />
+        )}
       </Box>
     </ChakraProvider>
   );
