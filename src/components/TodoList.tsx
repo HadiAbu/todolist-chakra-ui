@@ -1,26 +1,32 @@
 import * as React from "react";
-import { Button, Input, Flex, Checkbox, Heading } from "@chakra-ui/react";
+import { Button, Input, Flex, Checkbox } from "@chakra-ui/react";
+import { Todo } from "../store";
 
-function TodoListItems() {
+interface TodoListItemsProps {
+  data: Array<Todo> | undefined | any;
+  handleDelete: (id: number) => void;
+}
+
+function TodoListItems({ data, handleDelete }: TodoListItemsProps) {
+  if (data === undefined) return <></>;
   return (
     <>
-      {[].map((todo: { id: number; text: string }) => (
-        <Flex pt={2} key={todo.id}>
-          <Checkbox />
-          <Input mx={2} value={todo.text} />
-          <Button>Delete</Button>
-        </Flex>
-      ))}
+      {data &&
+        Array.isArray(data) &&
+        data.map((todo: { id: number; text: string }) => (
+          <Flex pt={2} key={todo.id}>
+            <Checkbox />
+            <Input mx={2} defaultValue={todo.text} />
+            <Button onClick={(e) => handleDelete(todo.id)}>Delete</Button>
+          </Flex>
+        ))}
     </>
   );
 }
 
-function TodoList() {
+function TodoList({ data, handleDelete }: TodoListItemsProps) {
   return (
-    <>
-      <Heading>Todo List</Heading>
-      <TodoListItems />
-    </>
+    <>{data && <TodoListItems data={data} handleDelete={handleDelete} />}</>
   );
 }
 
