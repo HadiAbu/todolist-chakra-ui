@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Todo } from "./store";
 import "./App.css";
 import Loader from "./components/Loader";
+import { sortFunc } from "./utils";
 
 export function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -26,7 +27,9 @@ export function App() {
         const response = await fetch(
           "https://raw.githubusercontent.com/jherr/todos-four-ways/master/data/todos.json"
         );
-        const responseData = await response.json();
+        let responseData = await response.json();
+        responseData = sortFunc(responseData, "text");
+        console.log(responseData);
         setTodos(responseData);
       } catch (e) {
         console.error(e.message);
