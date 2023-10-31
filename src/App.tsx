@@ -14,10 +14,12 @@ export function App() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleAdd = (newTodoInput: string) => {
-    setTodos((todos) => [
+    let newArr = [
       ...todos,
       { id: Number(todos.length + 1), text: newTodoInput, done: false },
-    ]);
+    ];
+    newArr = sortFunc([...newArr], "text");
+    setTodos(newArr);
   };
 
   const handleLoad = async () => {
